@@ -1,0 +1,67 @@
+{
+  "modality": "ct",
+  "classes": [
+    "adenocarcinoma",
+    "large.cell.carcinoma",
+    "normal",
+    "squamous.cell.carcinoma"
+  ],
+  "test_accuracy": 0.4666666666666667,
+  "macro_f1": 0.4429652461359779,
+  "roc_auc_ovr": 0.7997730309427966,
+  "confusion_matrix": [
+    [
+      2,
+      47,
+      31,
+      40
+    ],
+    [
+      0,
+      44,
+      2,
+      5
+    ],
+    [
+      0,
+      0,
+      54,
+      0
+    ],
+    [
+      1,
+      33,
+      9,
+      47
+    ]
+  ],
+  "per_class": {
+    "adenocarcinoma": {
+      "precision": 0.6666666666666666,
+      "recall": 0.016666666666666666,
+      "f1": 0.032520325203252036,
+      "support": 120
+    },
+    "large.cell.carcinoma": {
+      "precision": 0.3548387096774194,
+      "recall": 0.8627450980392157,
+      "f1": 0.5028571428571429,
+      "support": 51
+    },
+    "normal": {
+      "precision": 0.5625,
+      "recall": 1.0,
+      "f1": 0.72,
+      "support": 54
+    },
+    "squamous.cell.carcinoma": {
+      "precision": 0.5108695652173914,
+      "recall": 0.5222222222222223,
+      "f1": 0.5164835164835165,
+      "support": 90
+    }
+  },
+  "checkpoint_val_acc": 0.7083333333333334,
+  "checkpoint_epoch": 7,
+  "test_set_size": 315
+}

@@ -1,0 +1,11 @@
+torch>=2.1.0
+torchvision>=0.16.0
+numpy
+pandas
+scikit-learn
+matplotlib
+opencv-python
+Pillow
+dash>=2.14.0
+dash-bootstrap-components
+plotly

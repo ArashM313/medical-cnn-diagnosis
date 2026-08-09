@@ -1,0 +1,35 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# PyCharm project settings (local IDE config, not shared)
+.idea/
+
+# Datasets: too large for GitHub, and paths are personal/local anyway.
+# Anyone cloning the repo should download the datasets themselves and
+# place them under data_sets/ per the paths in config.py.
+data_sets/
+
+# Trained model weights: regenerable by running training/train.py.
+# Committing ~40-100MB binary files bloats the repo and its history.
+# (Metrics JSON files in checkpoints/ are NOT ignored -- those are small
+# and worth showing off.)
+checkpoints/*.pth
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Logs / temp files
+*.log
+*.tmp
+
+# Jupyter checkpoint folders (leftover from the original notebook, if kept)
+.ipynb_checkpoints/
