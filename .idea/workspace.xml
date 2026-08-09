@@ -4,32 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c2ce394-a64e-455c-ad96-f577433b40d7" name="Changes" comment="Step1.2: &quot;README file created.&quot;">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/medical-cnn-diagnosis.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dashboard/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dashboard/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dashboard/callbacks.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dashboard/layout.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/interpretability/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/interpretability/gradcam.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/cnn_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training/dataset.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training/evaluate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training/recalibrate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training/train.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/inference.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+    <list default="true" id="2c2ce394-a64e-455c-ad96-f577433b40d7" name="Changes" comment="Step2.1: &quot;Add full project source: config, models, training, interpretability, dashboard&quot;">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkpoints/ct_metrics.json" beforeDir="false" afterPath="$PROJECT_DIR$/checkpoints/ct_metrics.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkpoints/mri_metrics.json" beforeDir="false" afterPath="$PROJECT_DIR$/checkpoints/mri_metrics.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkpoints/xray_metrics.json" beforeDir="false" afterPath="$PROJECT_DIR$/checkpoints/xray_metrics.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interpretability/gradcam.py" beforeDir="false" afterPath="$PROJECT_DIR$/interpretability/gradcam.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interpretability/gradcam_test_ct.png" beforeDir="false" afterPath="$PROJECT_DIR$/interpretability/gradcam_test_ct.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interpretability/gradcam_test_mri.png" beforeDir="false" afterPath="$PROJECT_DIR$/interpretability/gradcam_test_mri.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interpretability/gradcam_test_xray.png" beforeDir="false" afterPath="$PROJECT_DIR$/interpretability/gradcam_test_xray.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training/evaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/training/evaluate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/training/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,12 +55,15 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.app.executor": "Run",
     "Python.cnn_model.executor": "Run",
     "Python.config.executor": "Run",
     "Python.dataset.executor": "Run",
     "Python.evaluate.executor": "Run",
     "Python.gradcam.executor": "Run",
+    "Python.inference.executor": "Run",
     "Python.preprocessing.executor": "Run",
+    "Python.recalibrate.executor": "Run",
     "Python.train.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -230,12 +219,21 @@
       <option name="project" value="LOCAL" />
       <updated>1786236699535</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Step2.1: &quot;Add full project source: config, models, training, interpretability, dashboard&quot;">
+      <option name="closed" value="true" />
+      <created>1786238030505</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1786238030506</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="&quot;Step1.1: Project Created&quot;" />
     <MESSAGE value="Step1.2: &quot;README file created.&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Step1.2: &quot;README file created.&quot;" />
+    <MESSAGE value="Step2.1: &quot;Add full project source: config, models, training, interpretability, dashboard&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Step2.1: &quot;Add full project source: config, models, training, interpretability, dashboard&quot;" />
   </component>
 </project>

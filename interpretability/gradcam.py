@@ -17,6 +17,7 @@ import torch
 from PIL import Image
 
 import config
+from utils.inference import predict_class_index
 
 
 class GradCAM:
@@ -126,15 +127,26 @@ def overlay_heatmap(original_pil_image: Image.Image, cam: np.ndarray, image_size
     return Image.fromarray(overlay)
 
 
-def explain_prediction(model: torch.nn.Module, pil_image: Image.Image, transform, device, target_class: int = None):
+def explain_prediction(model: torch.nn.Module, pil_image: Image.Image, transform, device, decision_threshold: float = 0.5):
     """
-    High-level convenience function the dashboard (Step 6) will call directly.
+    High-level convenience function the dashboard (Step 6) calls directly.
 
     pil_image: the ORIGINAL uploaded image (before any resizing/normalizing) --
         this function handles preprocessing internally so the overlay is
         built on the true original image, not a lower-quality intermediate.
     transform: the eval-mode transform from utils.preprocessing.get_transforms
         (must be train=False -- no augmentation for inference).
+    decision_threshold: for binary modalities, the calibrated threshold from
+        the checkpoint (see training/train.py's threshold calibration step).
+        Ignored for multiclass models (predict_class_index falls back to
+        argmax automatically when there are more than 2 classes).
+
+    IMPORTANT: we compute the final predicted class FIRST (respecting the
+    threshold), then generate Grad-CAM for exactly that class. This ensures
+    the heatmap always explains the prediction actually shown to the user --
+    if we let Grad-CAM default to raw argmax while displaying a
+    threshold-adjusted class elsewhere, the two could disagree and the
+    "explanation" would be for the wrong class.
 
     Returns a dict with everything the dashboard needs to display:
         overlay_image: PIL Image, the Grad-CAM heatmap blended onto the scan
@@ -144,22 +156,26 @@ def explain_prediction(model: torch.nn.Module, pil_image: Image.Image, transform
     """
     input_tensor = transform(pil_image).unsqueeze(0).to(device)
 
+    # First pass (no grad): get probabilities to decide the final class.
+    model.eval()
+    with torch.no_grad():
+        probabilities = torch.softmax(model(input_tensor), dim=1)[0].cpu().numpy()
+
+    predicted_class_index = predict_class_index(probabilities, decision_threshold)
+
+    # Second pass (with grad, inside GradCAM): explain THAT specific class.
     cam_engine = GradCAM(model, model.features_final)
-    cam, predicted_class_index = cam_engine.generate(input_tensor, target_class)
+    cam, _ = cam_engine.generate(input_tensor, target_class=predicted_class_index)
     cam_engine.remove_hooks()
 
-    with torch.no_grad():
-        logits = model(input_tensor)
-        probabilities = torch.softmax(logits, dim=1)[0]
-        confidence = probabilities[predicted_class_index].item()
-
+    confidence = float(probabilities[predicted_class_index])
     overlay_image = overlay_heatmap(pil_image, cam, image_size=config.IMAGE_SIZE)
 
     return {
         "overlay_image": overlay_image,
         "predicted_class_index": predicted_class_index,
         "confidence": confidence,
-        "all_probabilities": probabilities.detach().cpu().numpy(),
+        "all_probabilities": probabilities,
     }
 
 

@@ -161,18 +161,44 @@ def train_modality(modality: str, epochs: int = None):
     print(f"\nFinished training '{modality}'. Best val_acc={best_val_acc:.4f}")
 
     # --- Decision threshold calibration (binary modalities only) ---
-    # Reload the BEST checkpoint (not necessarily the in-memory model's
-    # current weights, since the last epoch trained isn't always the best
-    # one) and, for binary modalities, find the optimal classification
-    # threshold on the validation set. This is what fixes the "high ROC-AUC
-    # but mediocre accuracy" symptom: the model's probabilities are fine,
-    # the default 0.5 cutoff just wasn't the best place to draw the line.
-    decision_threshold = 0.5
+    calibrate_threshold_for_modality(modality, model=model)
+
+    return history
+
+
+def calibrate_threshold_for_modality(modality: str, model=None):
+    """
+    Reloads the BEST checkpoint (not necessarily the in-memory model's
+    current weights, since the last epoch trained isn't always the best
+    one) and, for binary modalities, finds the optimal classification
+    threshold on the validation set. This is what fixes the "high ROC-AUC
+    but mediocre accuracy" symptom: the model's probabilities are fine,
+    the default 0.5 cutoff just wasn't the best place to draw the line.
+
+    Can be called two ways:
+      - From train_modality() right after training, passing the already-
+        built `model` object (avoids rebuilding it from scratch).
+      - Standalone (model=None), e.g. from recalibrate.py, to recalibrate
+        an EXISTING checkpoint without retraining -- useful when you've
+        changed nothing about a modality's architecture/data and just want
+        to (re)tune the threshold.
+    """
+    cfg = config.MODALITIES[modality]
+    num_classes = len(cfg["classes"])
+    checkpoint = torch.load(cfg["checkpoint"], map_location=config.DEVICE)
+
+    if model is None:
+        use_pretrained = bool(cfg.get("use_pretrained", False))
+        model = build_model(num_classes=num_classes, device=config.DEVICE, pretrained=use_pretrained)
+
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.eval()
+
+    decision_threshold = 0.5  # default / multiclass placeholder
+
     if num_classes == 2:
-        print("Calibrating decision threshold on validation set...")
-        best_checkpoint = torch.load(cfg["checkpoint"], map_location=config.DEVICE)
-        model.load_state_dict(best_checkpoint["model_state_dict"])
-        model.eval()
+        print(f"[{modality}] Calibrating decision threshold on validation set...")
+        _, val_loader, _ = build_dataloaders(modality)
 
         val_probs, val_labels = [], []
         with torch.no_grad():
@@ -183,24 +209,20 @@ def train_modality(modality: str, epochs: int = None):
                 val_labels.extend(labels.numpy().tolist())
 
         decision_threshold = find_best_threshold(np.array(val_labels), np.array(val_probs))
-        print(f"Best decision threshold: {decision_threshold:.2f} (default would be 0.50)")
+        print(f"[{modality}] Best decision threshold: {decision_threshold:.2f} (default would be 0.50)")
 
-        # Re-save the checkpoint with the calibrated threshold included.
-        best_checkpoint["decision_threshold"] = decision_threshold
-        torch.save(best_checkpoint, cfg["checkpoint"])
-    else:
-        # Multiclass: no single threshold applies; store 0.5 for a
-        # consistent checkpoint schema across all modalities (unused downstream).
-        checkpoint = torch.load(cfg["checkpoint"], map_location=config.DEVICE)
-        checkpoint["decision_threshold"] = decision_threshold
-        torch.save(checkpoint, cfg["checkpoint"])
-
-    return history
+    checkpoint["decision_threshold"] = decision_threshold
+    torch.save(checkpoint, cfg["checkpoint"])
+    print(f"[{modality}] Checkpoint updated with decision_threshold={decision_threshold:.2f}")
 
 
 if __name__ == "__main__":
-    # Trains all three modalities one after another. On CPU this can take a
-    # while -- feel free to comment out modalities you don't want to
-    # (re)train right now, e.g. run just ["xray"] first to sanity check.
-    for modality_name in config.MODALITIES:
+    # Edit this list to control which modalities get (re)trained.
+    # Only CT needs retraining after the architecture change (deeper
+    # fine-tuning). X-ray and MRI are untouched -- retraining them again
+    # would just waste CPU time for no benefit. Use recalibrate.py instead
+    # for X-ray's threshold-only update.
+    MODALITIES_TO_TRAIN = ["ct"]
+
+    for modality_name in MODALITIES_TO_TRAIN:
         train_modality(modality_name)
