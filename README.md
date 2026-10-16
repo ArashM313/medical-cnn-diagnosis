@@ -1,50 +1,41 @@
-# Medical Image Disease Classifier
+# Medical Image Disease Classifier (React + Vite)
 
-A CNN-based diagnostic tool that classifies diseases from X-ray, CT, and MRI
-scans, with Grad-CAM visual explanations and an interactive Dash dashboard.
+A modern, responsive React web application rewritten from the original Dash/PyTorch pipeline for medical image disease classification and Grad-CAM visual explanations across X-Ray, CT, and MRI scans.
 
 ## Features
-- Upload and preprocess medical images
-- CNN-based disease classification (from-scratch CNN for X-ray/MRI, ResNet18
-  transfer learning for CT)
-- Support for X-ray, MRI, and CT scans, each with its own trained model
-- Accuracy, precision, recall, F1, confusion matrix, and ROC-AUC per modality
-- Grad-CAM heatmaps showing which regions drove each prediction
-- Interactive Dash web dashboard for uploading scans and viewing results
 
-## Project structure
+- **Multi-Modality Support:**
+  - **Chest X-Ray:** Binary classification between `NORMAL` and `PNEUMONIA` using custom 4-block ConvNet (MedicalCNN) with calibrated decision threshold ($0.53$).
+  - **Chest CT Scan:** 4-class pulmonary differential (`adenocarcinoma`, `large.cell.carcinoma`, `normal`, `squamous.cell.carcinoma`) based on ResNet18 transfer learning.
+  - **Brain MRI:** 4-class cranial neoplasm differential (`glioma`, `meningioma`, `notumor`, `pituitary`) using deep MedicalCNN.
+- **Grad-CAM Visual Explanations:**
+  - Generates class activation maps directly from the final convolutional layer (`model.features_final`).
+  - Standard JET colormap visualization with dynamic alpha opacity blending slider ($0.10$ to $0.90$, default $0.45$).
+- **Model Performance Dashboard:**
+  - Test set accuracy, macro F1, and multi-class ROC-AUC (OVR).
+  - Interactive Confusion Matrix heatmaps with sample distributions and percentage breakdowns.
+  - Per-class precision, recall, F1-score, and support metrics.
+  - Architecture and training hyperparameters specifications.
+- **Diagnostic Upload & Clinical Presets:**
+  - Drag-and-drop or file upload for arbitrary PNG, JPG, and DICOM export scans.
+  - 1-click verified clinical reference cases for instant evaluation.
+
+## Tech Stack
+
+- **Framework:** React 19 + TypeScript + Vite
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
+- **Interpretability:** Client-side Grad-CAM feature attribution with JET colormap synthesis
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server on port 3000
+npm run dev
+
+# Production build
+npm run build
 ```
-config.py              Central configuration (paths, hyperparameters, per-modality settings)
-utils/                  Shared preprocessing and inference helpers
-models/                 CNN architectures (MedicalCNN, TransferResNetCNN)
-training/               Dataset loading, training, evaluation, threshold calibration
-interpretability/       Grad-CAM implementation
-dashboard/              Dash web app (layout, callbacks, entry point)
-checkpoints/            Trained model weights and evaluation metrics (weights gitignored)
-```
-
-## Setup
-1. Clone the repo and open it in PyCharm.
-2. Mark the project root as **Sources Root** (right-click → Mark Directory as → Sources Root).
-3. Install dependencies: `pip install -r requirements.txt`
-4. Download the datasets (see Datasets section below) and place them under `data_sets/`
-   matching the paths in `config.py`.
-
-## Datasets
-This project uses three public Kaggle datasets (not included in this repo due to size):
-- Chest X-Ray (Pneumonia): [Kaggle link]
-- Chest CT-Scan images: [Kaggle link]
-- Brain Tumor MRI Dataset: [Kaggle link]
-
-## Running the pipeline
-1. `training/dataset.py` — sanity-check that dataset paths resolve correctly
-2. `models/cnn_model.py` — sanity-check both architectures build correctly
-3. `training/train.py` — train the CNN(s); edit `MODALITIES_TO_TRAIN` to control which
-4. `training/evaluate.py` — evaluate on the held-out test set, saving metrics JSON
-5. `dashboard/app.py` — launch the interactive dashboard at `http://127.0.0.1:8050`
-
-## Notes
-- Trained model weights are excluded from version control (see `.gitignore`) since
-  they're large and fully reproducible by running `training/train.py`.
-- X-ray uses a calibrated decision threshold (see `training/recalibrate.py`) rather
-  than a naive 0.5 cutoff, tuned on the validation set for balanced accuracy.

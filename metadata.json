@@ -1,0 +1,7 @@
+{
+  "name": "Medical Image Disease Classifier",
+  "description": "CNN-based diagnostic tool that classifies diseases from X-ray, CT, and MRI scans with Grad-CAM visual explanations and interactive model metrics.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
